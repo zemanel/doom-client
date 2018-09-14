@@ -1,11 +1,15 @@
 FROM node:8.11.4-jessie
 
+RUN mkdir /app
+
+WORKDIR /app
+
 COPY package.json .
 
-RUN yarn install
+RUN npm install
 
 COPY . .
 
-RUN yarn build
+RUN npm run build
 
-CMD yarn start
+CMD npm run dev
