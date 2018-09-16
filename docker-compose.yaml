@@ -1,0 +1,52 @@
+version: '3'
+services:
+
+  ui:
+    build: .
+    command: ["npm", "run", "dev", ]
+    ports:
+      - "8080:8080"
+    environment:
+    - HOST=0.0.0.0
+    - PORT=8080
+    - NODE_ENV=development
+    - DOOM_STATE_SERVICE_URL=http://localhost:8083/api/state
+    - DOOM_ENGINE_SERVICE_URL=http://localhost:8083/api/shootDemon
+    volumes:
+    - .:/app
+    # bind volume inside container for source mount not shadow image dirs
+    - /app/node_modules
+    - /app/dist
+
+ # run production deployment script
+  ui-deployment:
+    build: .
+    command: >
+      bash -c "npm run build &&
+              /app/bin/rewrite-config.js"
+    environment:
+      - NODE_ENV=production
+      - DIST_DIR=/app/dist
+      - WWW_DIR=/tmp/www
+      - DOOM_STATE_SERVICE_URL=http://localhost:9000/api/state
+      - DOOM_ENGINE_SERVICE_URL=http://localhost:9001/api/shootDemon
+    volumes:
+    - .:/app
+    # bind volume inside container for source mount not shadow image dirs
+    - /app/node_modules
+    - /app/dist
+    # shared NGINX static files dir
+    - www-data:/tmp/www
+    depends_on:
+      - nginx
+
+  # serve docker image production build with nginx
+  nginx:
+    image: nginx:1.14
+    ports:
+      - "8090:80"
+    volumes:
+    - www-data:/usr/share/nginx/html
+
+volumes:
+  www-data:
