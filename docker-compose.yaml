@@ -10,13 +10,26 @@ services:
     - HOST=0.0.0.0
     - PORT=8080
     - NODE_ENV=development
-    - DOOM_STATE_SERVICE_URL=http://localhost:8083/api/state
-    - DOOM_ENGINE_SERVICE_URL=http://localhost:8083/api/shootDemon
+    - DOOM_ENGINE_SERVICE_URL=http://localhost:8081/
+    - DOOM_STATE_SERVICE_URL=http://localhost:8082/
     volumes:
     - .:/app
     # bind volume inside container for source mount not shadow image dirs
     - /app/node_modules
     - /app/dist
+
+  doom-engine:
+    image: microservice-doom/doom-engine:latest
+    environment:
+      - DOOM_STATE_SERVICE_URL=http://doom-state:8080/
+      - DOOM_STATE_SERVICE_PASSWORD=enginepwd
+    ports:
+      - "8081:8080"
+
+  doom-state:
+    image: microservice-doom/doom-state:latest
+    ports:
+      - "8082:8080"
 
  # run production deployment script
   ui-deployment:
@@ -28,8 +41,8 @@ services:
       - NODE_ENV=production
       - DIST_DIR=/app/dist
       - WWW_DIR=/tmp/www
-      - DOOM_STATE_SERVICE_URL=http://localhost:9000/api/state
-      - DOOM_ENGINE_SERVICE_URL=http://localhost:9001/api/shootDemon
+      - DOOM_ENGINE_SERVICE_URL=http://localhost:8081/
+      - DOOM_STATE_SERVICE_URL=http://localhost:8082/
     volumes:
     - .:/app
     # bind volume inside container for source mount not shadow image dirs

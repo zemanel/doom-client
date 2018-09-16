@@ -25,9 +25,6 @@ import Demon from './components/Demon'
 import axios from 'axios'
 import config from './config'
 
-console.log('config', config)
-console.log('process.env', process.env)
-
 export default {
   name: 'app',
   data () {
@@ -43,7 +40,7 @@ export default {
     killDemon: function (demonId) {
       if (this.player.shotgunAmmo > 0) {
         axios
-          .post(`${config.DOOM_ENGINE_SERVICE_URL}`, {
+          .post(`${config.DOOM_ENGINE_SERVICE_URL}/shootDemon`, {
             demonId: demonId,
             weapon: 'shotgun'
           })
@@ -59,7 +56,7 @@ export default {
     },
 
     loadData: function () {
-      axios.get(`${config.DOOM_STATE_SERVICE_URL}`).then(response => {
+      axios.get(`${config.DOOM_STATE_SERVICE_URL}/state`).then(response => {
         const data = response.data
         this.player = data.player
         this.demons = data.demons
