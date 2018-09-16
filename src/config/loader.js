@@ -6,7 +6,6 @@
  */
 function getConfigValue (key) {
   let value = null
-  console.log('process.env', process.env)
   if (process.env && process.env[`${key}`] !== undefined) {
     // get env var value
     value = process.env[`${key}`]
