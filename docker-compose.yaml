@@ -34,9 +34,7 @@ services:
  # run production deployment script
   ui-deployment:
     build: .
-    command: >
-      bash -c "npm run build &&
-              /app/bin/rewrite-config.js"
+    command: ["/app/bin/rewrite-config.js"]
     environment:
       - NODE_ENV=production
       - DIST_DIR=/app/dist

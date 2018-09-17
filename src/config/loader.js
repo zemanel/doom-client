@@ -1,5 +1,5 @@
 /**
- * Get config value  with precendence:
+ * Get config value  with precedence:
  * - check `process.env`
  * - check current web page meta tags
  * @param {string} key Configuration key name
